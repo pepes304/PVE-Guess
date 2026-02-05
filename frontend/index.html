@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wordle Українською</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes flip {
+      0% { transform: rotateX(0deg); }
+      50% { transform: rotateX(90deg); }
+      100% { transform: rotateX(0deg); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .flip { animation: flip 0.5s ease-in-out; }
+    .shake { animation: shake 0.5s ease-in-out; }
+    .bounce { animation: bounce 0.3s ease-in-out; }
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4">
+  <h1 class="text-3xl font-bold text-white mb-6">🇺🇦 WORDLE</h1>
+  
+  <div id="message" class="h-8 mb-4 text-white text-lg font-semibold"></div>
+  
+  <div id="grid" class="grid grid-rows-6 gap-1.5 mb-6"></div>
+  
+  <div id="keyboard" class="flex flex-col gap-1.5"></div>
+  
+  <button id="newGame" class="mt-6 px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition hidden">
+    Нова гра
+  </button>
+
+  <script>
+    const WORDS = [
+      'СЛОВО', 'ДУМКА', 'КНИГА', 'МРІЯ', 'ЗЕМЛЯ', 'ВОГОНЬ', 'ВІТЕР', 'СОНЦЕ',
+      'МІСЯЦЬ', 'ЗІРКА', 'НЕБО', 'МОРЕ', 'ЛІСИ', 'ПОЛЕ', 'РІЧКА', 'ГОРА',
+      'ПТАХ', 'КВІТКА', 'ДЕРЕВО', 'ТРАВА', 'КРАСА', 'ЛЮБОВ', 'МАМА', 'ТАТО',
+      'СЕРЦЕ', 'ДУША', 'ПІСНЯ', 'ТАНОК', 'СВІТ', 'ДЕНЬ', 'НІЧЧЮ', 'РАНОК',
+      'ВЕЧІР', 'ЖИТТЯ', 'ЩАСТЯ', 'ДОЛЯ', 'ВОЛЯ', 'СИЛА', 'ВЛАДА', 'ЧЕСТЬ',
+      'СЛАВА', 'ГЕРОЙ', 'НАРОД', 'МІСТО', 'СЕЛО', 'ХАТА', 'ДВІР', 'ШЛЯХ',
+      'ДРУГ', 'ВОРОГ', 'БИТВА', 'ПЕРЕМОГА', 'МОВА', 'КАЗКА', 'ЛЕГЕНДА',
+      'ВОДА', 'ХЛІБ', 'СІЛЬ', 'ЦУКОР', 'МОЛОКО', 'МАСЛО', 'СМЕТАНА',
+      'БОРЩ', 'ВАРЕНИКИ', 'КАША', 'СМАК', 'ЗАПАХ', 'КОЛІР', 'ЗВУК',
+      'ТИША', 'ШУМ', 'ГОЛОС', 'СМІХ', 'ПЛАЧ', 'РАДІСТЬ', 'СУМНО',
+      'ПАЛАЦ', 'ЗАМОК', 'ХРАМ', 'ШКОЛА', 'ПАРК', 'САДОК', 'ВУЛИЦЯ',
+      'ПЛОЩА', 'РИНОК', 'КРАМНИЦЯ', 'БАНК', 'ПОШТА', 'ЛІКАРНЯ',
+      'ТЕАТР', 'МУЗЕЙ', 'КІНО', 'СТАДІОН', 'БАСЕЙН', 'СПОРТ', 'ФУТБОЛ',
+      'ТАНЕЦЬ', 'МУЗИКА', 'ГІТАРА', 'СКРИПКА', 'БАРАБАН', 'ФЛЕЙТА',
+      'БІЛКА', 'ЗАЄЦЬ', 'ВОВК', 'ЛИСИЦЯ', 'ВЕДМІДЬ', 'ОЛЕНЬ', 'КАБАН',
+      'СОБАКА', 'КІТ', 'КОРОВА', 'КІН', 'СВИНЯ', 'ВІВЦЯ', 'КОЗА',
+      'КУРКА', 'КАЧКА', 'ГУСКА', 'ІНДИК', 'ГОЛУБ', 'ВОРОНА', 'СОРОКА',
+      'ЯБЛУКО', 'ГРУША', 'СЛИВА', 'ВИШНЯ', 'ЧЕРЕШНЯ', 'АБРИКОС',
+      'ПЕРСИК', 'ВИНОГРАД', 'КАВУН', 'ДИНЯ', 'ПОЛУНИЦЯ', 'МАЛИНА',
+      'АГРУС', 'СМОРОДИНА', 'ЖУРАВЛИНА', 'ЧОРНИЦЯ', 'ОЖИНА',
+      'КАРТОПЛЯ', 'МОРКВА', 'БУРЯК', 'КАПУСТА', 'ОГІРОК', 'ПОМІДОР',
+      'ПЕРЕЦЬ', 'ЦИБУЛЯ', 'ЧАСНИК', 'ГАРБУЗ', 'КАБАЧОК', 'БАКЛАЖАН',
+      'ПШЕНИЦЯ', 'ЖИТО', 'ЯЧМІНЬ', 'ОВЕС', 'КУКУРУДЗА', 'СОНЯШНИК',
+      'ТРОЯНДА', 'ТЮЛЬПАН', 'НАРЦИС', 'КОНВАЛІЯ', 'РОМАШКА', 'ВОЛОШКА',
+      'МАК', 'ПІВОНІЯ', 'ГЛАДІОЛУС', 'ХРИЗАНТЕМА', 'АЙСТРА', 'ЖОРЖИНА',
+      'ДУБ', 'БЕРЕЗА', 'СОСНА', 'ЯЛИНА', 'КЛЕН', 'КАШТАН', 'ВЕРБА',
+      'ТОПОЛЯ', 'ЛИПА', 'АКАЦІЯ', 'ГОРІХ', 'ВИШНЯ', 'ЯБЛУНЯ', 'ГРУША',
+      'ГОЛОВА', 'РУКА', 'НОГА', 'ОКО', 'ВУХО', 'НІС', 'РОТ', 'ЗУБ',
+      'ЯЗИК', 'ВОЛОССЯ', 'ШКІРА', 'КІСТКА', 'МЯЗИ', 'КРОВ', 'НЕРВИ',
+      'СОРОЧКА', 'ШТАНИ', 'ПЛАТТЯ', 'СПІДНИЦЯ', 'СВЕТР', 'КУРТКА',
+      'ПАЛЬТО', 'ШУБА', 'ШАПКА', 'ШАРФ', 'РУКАВИЧКИ', 'ЧЕРЕВИКИ',
+      'ЧОБОТИ', 'КРОСІВКИ', 'ТУФЛІ', 'САНДАЛІ', 'КАПЦІ', 'ШКАРПЕТКИ',
+      'СТІЛ', 'СТІЛЕЦЬ', 'КРІСЛО', 'ДИВАН', 'ЛІЖКО', 'ШАФА', 'ПОЛИЦЯ',
+      'ТУМБА', 'КОМОД', 'ДЗЕРКАЛО', 'ЛАМПА', 'ГОДИННИК', 'КАРТИНА',
+      'ВАЗА', 'ЧАШКА', 'ТАРІЛКА', 'ЛОЖКА', 'ВИДЕЛКА', 'НІЖ', 'КАСТРУЛЯ',
+      'СКОВОРОДА', 'ЧАЙНИК', 'КАВОВАРКА', 'МИСКА', 'ГЛЕЧИК', 'КЕЛИХ'
+    ].filter(w => w.length === 5);
+
+    const KEYBOARD_ROWS = [
+      ['Й', 'Ц', 'У', 'К', 'Е', 'Н', 'Г', 'Ш', 'Щ', 'З', 'Х', 'Ї'],
+      ['Ф', 'І', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Є', '⌫'],
+      ['\'', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', 'Ґ', '↵']
+    ];
+
+    let targetWord = '';
+    let currentRow = 0;
+    let currentCol = 0;
+    let currentGuess = '';
+    let gameOver = false;
+    let letterStates = {};
+
+    const grid = document.getElementById('grid');
+    const keyboard = document.getElementById('keyboard');
+    const message = document.getElementById('message');
+    const newGameBtn = document.getElementById('newGame');
+
+    function init() {
+      targetWord = WORDS[Math.floor(Math.random() * WORDS.length)];
+      currentRow = 0;
+      currentCol = 0;
+      currentGuess = '';
+      gameOver = false;
+      letterStates = {};
+      message.textContent = '';
+      newGameBtn.classList.add('hidden');
+      
+      createGrid();
+      createKeyboard();
+      
+      console.log('Слово:', targetWord);
+    }
+
+    function createGrid() {
+      grid.innerHTML = '';
+      for (let i = 0; i < 6; i++) {
+        const row = document.createElement('div');
+        row.className = 'flex gap-1.5';
+        for (let j = 0; j < 5; j++) {
+          const cell = document.createElement('div');
+          cell.className = 'w-14 h-14 border-2 border-gray-600 flex items-center justify-center text-2xl font-bold text-white uppercase';
+          cell.id = `cell-${i}-${j}`;
+          row.appendChild(cell);
+        }
+        grid.appendChild(row);
+      }
+    }
+
+    function createKeyboard() {
+      keyboard.innerHTML = '';
+      KEYBOARD_ROWS.forEach(row => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'flex gap-1 justify-center';
+        row.forEach(key => {
+          const btn = document.createElement('button');
+          btn.className = 'min-w-[32px] h-12 px-2 bg-gray-500 text-white rounded font-semibold text-sm hover:bg-gray-400 transition';
+          btn.textContent = key;
+          btn.id = `key-${key}`;
+          btn.addEventListener('click', () => handleKeyPress(key));
+          rowDiv.appendChild(btn);
+        });
+        keyboard.appendChild(rowDiv);
+      });
+    }
+
+    function handleKeyPress(key) {
+      if (gameOver) return;
+
+      if (key === '⌫') {
+        if (currentCol > 0) {
+          currentCol--;
+          currentGuess = currentGuess.slice(0, -1);
+          const cell = document.getElementById(`cell-${currentRow}-${currentCol}`);
+          cell.textContent = '';
+          cell.classList.remove('border-gray-400');
+          cell.classList.add('border-gray-600');
+        }
+      } else if (key === '↵') {
+        submitGuess();
+      } else if (currentCol < 5) {
+        const cell = document.getElementById(`cell-${currentRow}-${currentCol}`);
+        cell.textContent = key;
+        cell.classList.remove('border-gray-600');
+        cell.classList.add('border-gray-400');
+        cell.classList.add('bounce');
+        setTimeout(() => cell.classList.remove('bounce'), 300);
+        currentGuess += key;
+        currentCol++;
+      }
+    }
+
+    function submitGuess() {
+      if (currentGuess.length !== 5) {
+        showMessage('Введіть 5 літер!');
+        shakeRow();
+        return;
+      }
+
+      const guess = currentGuess.toUpperCase();
+      const target = targetWord.toUpperCase();
+      const result = checkGuess(guess, target);
+      
+      revealRow(result);
+    }
+
+    function checkGuess(guess, target) {
+      const result = Array(5).fill('absent');
+      const targetLetters = target.split('');
+      const guessLetters = guess.split('');
+      
+      // First pass: mark correct positions
+      for (let i = 0; i < 5; i++) {
+        if (guessLetters[i] === targetLetters[i]) {
+          result[i] = 'correct';
+          targetLetters[i] = null;
+        }
+      }
+      
+      // Second pass: mark present letters
+      for (let i = 0; i < 5; i++) {
+        if (result[i] === 'correct') continue;
+        const idx = targetLetters.indexOf(guessLetters[i]);
+        if (idx !== -1) {
+          result[i] = 'present';
+          targetLetters[idx] = null;
+        }
+      }
+      
+      return result;
+    }
+
+    function revealRow(result) {
+      const guess = currentGuess.toUpperCase();
+      
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          const cell = document.getElementById(`cell-${currentRow}-${i}`);
+          cell.classList.add('flip');
+          
+          setTimeout(() => {
+            cell.classList.remove('border-gray-400', 'border-gray-600');
+            if (result[i] === 'correct') {
+              cell.classList.add('bg-green-600', 'border-green-600');
+            } else if (result[i] === 'present') {
+              cell.classList.add('bg-yellow-500', 'border-yellow-500');
+            } else {
+              cell.classList.add('bg-gray-700', 'border-gray-700');
+            }
+            
+            updateKeyboard(guess[i], result[i]);
+          }, 250);
+        }, i * 300);
+      }
+
+      setTimeout(() => {
+        if (guess === targetWord.toUpperCase()) {
+          showMessage('🎉 Вітаю! Ви вгадали!');
+          gameOver = true;
+          newGameBtn.classList.remove('hidden');
+        } else if (currentRow === 5) {
+          showMessage(`Слово було: ${targetWord}`);
+          gameOver = true;
+          newGameBtn.classList.remove('hidden');
+        } else {
+          currentRow++;
+          currentCol = 0;
+          currentGuess = '';
+        }
+      }, 5 * 300 + 300);
+    }
+
+    function updateKeyboard(letter, state) {
+      const key = document.getElementById(`key-${letter}`);
+      if (!key) return;
+      
+      const currentState = letterStates[letter];
+      if (currentState === 'correct') return;
+      if (currentState === 'present' && state !== 'correct') return;
+      
+      letterStates[letter] = state;
+      key.classList.remove('bg-gray-500', 'bg-green-600', 'bg-yellow-500', 'bg-gray-700');
+      
+      if (state === 'correct') {
+        key.classList.add('bg-green-600');
+      } else if (state === 'present') {
+        key.classList.add('bg-yellow-500');
+      } else {
+        key.classList.add('bg-gray-700');
+      }
+    }
+
+    function showMessage(text) {
+      message.textContent = text;
+    }
+
+    function shakeRow() {
+      const row = grid.children[currentRow];
+      row.classList.add('shake');
+      setTimeout(() => row.classList.remove('shake'), 500);
+    }
+
+    // Physical keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (gameOver) return;
+      
+      const key = e.key.toUpperCase();
+      if (key === 'BACKSPACE') {
+        handleKeyPress('⌫');
+      } else if (key === 'ENTER') {
+        handleKeyPress('↵');
+      } else if (/^[А-ЯІЇЄҐЬ']$/i.test(key)) {
+        handleKeyPress(key);
+      }
+    });
+
+    newGameBtn.addEventListener('click', init);
+
+    init();
+  </script>
+</body>
+</html>
