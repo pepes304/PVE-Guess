@@ -6,7 +6,3 @@ class UserCreate(BaseModel):
 
     class Config:
         from_attributes = True
-
-class TokenCreate(BaseModel):
-    nickname: str
-    id: int
