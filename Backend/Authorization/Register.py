@@ -15,12 +15,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/log_in")
-def log_in(user: UserCreate, db: Session = Depends(get_db)):
+@app.post("/register")
+def register(user: UserCreate, db: Session = Depends(get_db)):
     db_users = db.query(Users).filter(Users.nickname == user.nickname).first()
 
     if db_users:
-        raise HTTPException(status_code=400, detail="Nickname already taken")
+        raise HTTPException(status_code=409, detail="Nickname already taken")
 
     hashed_password = hash_pw(user.password)
     new_user = Users(nickname=user.nickname, password=hashed_password)
@@ -30,7 +30,7 @@ def log_in(user: UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     return {
-        "message":"User log in successfully",
+        "message":"User registered  successfully",
         "id": new_user.id,
         "nickname": new_user.nickname
     }

@@ -6,3 +6,5 @@ class UserCreate(BaseModel):
 
     class Config:
         from_attributes = True
+
+
