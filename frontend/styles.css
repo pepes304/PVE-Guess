@@ -1,0 +1,7 @@
+/* Minimal styles for modal and tweaks */
+.modal-box input { width: 100%; }
+
+/* small responsive tweak to center the app */
+@media (max-width: 640px) {
+  body { padding: 1rem; }
+}
