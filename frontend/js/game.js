@@ -48,10 +48,10 @@ function createGrid() {
   grid.innerHTML = '';
   for (let i = 0; i < 6; i++) {
     const row = document.createElement('div');
-    row.className = 'flex gap-1.5';
+    row.className = 'flex gap-0.5 sm:gap-1 md:gap-1.5 justify-center';
     for (let j = 0; j < 5; j++) {
       const cell = document.createElement('div');
-      cell.className = 'w-14 h-14 border-2 border-gray-600 flex items-center justify-center text-2xl font-bold text-white uppercase';
+      cell.className = 'game-cell border-2 border-gray-600 flex items-center justify-center font-bold text-white uppercase';
       cell.id = `cell-${i}-${j}`;
       row.appendChild(cell);
     }
@@ -63,10 +63,10 @@ function createKeyboard() {
   keyboard.innerHTML = '';
   KEYBOARD_ROWS.forEach(row => {
     const rowDiv = document.createElement('div');
-    rowDiv.className = 'flex gap-1 justify-center';
+    rowDiv.className = 'flex gap-0.5 sm:gap-1 justify-center';
     row.forEach(key => {
       const btn = document.createElement('button');
-      btn.className = 'min-w-[32px] h-12 px-2 bg-gray-500 text-white rounded font-semibold text-sm hover:bg-gray-400 transition';
+      btn.className = 'game-keyboard-btn bg-gray-500 text-white rounded font-semibold hover:bg-gray-400 transition';
       btn.textContent = key;
       btn.id = `key-${key}`;
       btn.addEventListener('click', () => handleKeyPress(key));

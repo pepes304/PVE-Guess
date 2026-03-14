@@ -17,10 +17,73 @@
 .shake { animation: shake 0.5s ease-in-out; }
 .bounce { animation: bounce 0.3s ease-in-out; }
 
-/* Minimal styles for modal and tweaks */
-.modal-box input { width: 100%; }
+/* Modal styles */
+.modal-box input { 
+  width: 100%; 
+  font-size: 16px; /* Prevent zoom on mobile */
+}
 
-/* small responsive tweak to center the app */
-@media (max-width: 640px) {
-  body { padding: 1rem; }
+/* Game grid responsive */
+.game-cell {
+  min-width: 40px;
+  min-height: 40px;
+  font-size: 1.25rem;
+}
+
+.game-keyboard-btn {
+  min-width: 28px;
+  height: 36px;
+  font-size: 0.75rem;
+  padding: 0.25rem;
+}
+
+/* Mobile: phones up to 480px */
+@media (max-width: 480px) {
+  body { padding: 0.5rem; }
+  
+  .game-cell {
+    min-width: 35px;
+    min-height: 35px;
+    font-size: 1rem;
+    border-width: 1.5px;
+  }
+  
+  .game-keyboard-btn {
+    min-width: 24px;
+    height: 32px;
+    font-size: 0.65rem;
+    padding: 0.125rem;
+  }
+  
+  header { gap: 0.5rem; }
+}
+
+/* Tablet: 481px to 768px */
+@media (min-width: 481px) and (max-width: 768px) {
+  .game-cell {
+    min-width: 45px;
+    min-height: 45px;
+    font-size: 1.5rem;
+  }
+  
+  .game-keyboard-btn {
+    min-width: 32px;
+    height: 40px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Desktop: 769px and above */
+@media (min-width: 769px) {
+  .game-cell {
+    min-width: 56px;
+    min-height: 56px;
+    font-size: 2rem;
+  }
+  
+  .game-keyboard-btn {
+    min-width: 32px;
+    height: 48px;
+    font-size: 0.875rem;
+  }
 }
