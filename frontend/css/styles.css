@@ -18,7 +18,6 @@
 .bounce { animation: bounce 0.3s ease-in-out; }
 
 /* Minimal styles for modal and tweaks */
-.modal-overlay { }
 .modal-box input { width: 100%; }
 
 /* small responsive tweak to center the app */
