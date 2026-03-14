@@ -5,26 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wordle Українською</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @keyframes flip {
-      0% { transform: rotateX(0deg); }
-      50% { transform: rotateX(90deg); }
-      100% { transform: rotateX(0deg); }
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-5px); }
-      40%, 80% { transform: translateX(5px); }
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    .flip { animation: flip 0.5s ease-in-out; }
-    .shake { animation: shake 0.5s ease-in-out; }
-    .bounce { animation: bounce 0.3s ease-in-out; }
-  </style>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4">
   <header class="w-full max-w-4xl mb-6 flex items-center justify-between">
@@ -50,131 +31,10 @@
   <script>
     window.__API_BASE__ = 'http://0.0.0.0:8080';
   </script>
-  <script src="main.js" type="module"></script>
-  <script>
-    const WORDS = [
-      'СЛОВО', 'ДУМКА', 'КНИГА', 'МРІЯ', 'ЗЕМЛЯ', 'ВОГОНЬ', 'ВІТЕР', 'СОНЦЕ',
-      'МІСЯЦЬ', 'ЗІРКА', 'НЕБО', 'МОРЕ', 'ЛІСИ', 'ПОЛЕ', 'РІЧКА', 'ГОРА',
-      'ПТАХ', 'КВІТКА', 'ДЕРЕВО', 'ТРАВА', 'КРАСА', 'ЛЮБОВ', 'МАМА', 'ТАТО',
-      'СЕРЦЕ', 'ДУША', 'ПІСНЯ', 'ТАНОК', 'СВІТ', 'ДЕНЬ', 'НІЧЧЮ', 'РАНОК',
-      'ВЕЧІР', 'ЖИТТЯ', 'ЩАСТЯ', 'ДОЛЯ', 'ВОЛЯ', 'СИЛА', 'ВЛАДА', 'ЧЕСТЬ',
-      'СЛАВА', 'ГЕРОЙ', 'НАРОД', 'МІСТО', 'СЕЛО', 'ХАТА', 'ДВІР', 'ШЛЯХ',
-      'ДРУГ', 'ВОРОГ', 'БИТВА', 'ПЕРЕМОГА', 'МОВА', 'КАЗКА', 'ЛЕГЕНДА',
-      'ВОДА', 'ХЛІБ', 'СІЛЬ', 'ЦУКОР', 'МОЛОКО', 'МАСЛО', 'СМЕТАНА',
-      'БОРЩ', 'ВАРЕНИКИ', 'КАША', 'СМАК', 'ЗАПАХ', 'КОЛІР', 'ЗВУК',
-      'ТИША', 'ШУМ', 'ГОЛОС', 'СМІХ', 'ПЛАЧ', 'РАДІСТЬ', 'СУМНО',
-      'ПАЛАЦ', 'ЗАМОК', 'ХРАМ', 'ШКОЛА', 'ПАРК', 'САДОК', 'ВУЛИЦЯ',
-      'ПЛОЩА', 'РИНОК', 'КРАМНИЦЯ', 'БАНК', 'ПОШТА', 'ЛІКАРНЯ',
-      'ТЕАТР', 'МУЗЕЙ', 'КІНО', 'СТАДІОН', 'БАСЕЙН', 'СПОРТ', 'ФУТБОЛ',
-      'ТАНЕЦЬ', 'МУЗИКА', 'ГІТАРА', 'СКРИПКА', 'БАРАБАН', 'ФЛЕЙТА',
-      'БІЛКА', 'ЗАЄЦЬ', 'ВОВК', 'ЛИСИЦЯ', 'ВЕДМІДЬ', 'ОЛЕНЬ', 'КАБАН',
-      'СОБАКА', 'КІТ', 'КОРОВА', 'КІН', 'СВИНЯ', 'ВІВЦЯ', 'КОЗА',
-      'КУРКА', 'КАЧКА', 'ГУСКА', 'ІНДИК', 'ГОЛУБ', 'ВОРОНА', 'СОРОКА',
-      'ЯБЛУКО', 'ГРУША', 'СЛИВА', 'ВИШНЯ', 'ЧЕРЕШНЯ', 'АБРИКОС',
-      'ПЕРСИК', 'ВИНОГРАД', 'КАВУН', 'ДИНЯ', 'ПОЛУНИЦЯ', 'МАЛИНА',
-      'АГРУС', 'СМОРОДИНА', 'ЖУРАВЛИНА', 'ЧОРНИЦЯ', 'ОЖИНА',
-      'КАРТОПЛЯ', 'МОРКВА', 'БУРЯК', 'КАПУСТА', 'ОГІРОК', 'ПОМІДОР',
-      'ПЕРЕЦЬ', 'ЦИБУЛЯ', 'ЧАСНИК', 'ГАРБУЗ', 'КАБАЧОК', 'БАКЛАЖАН',
-      'ПШЕНИЦЯ', 'ЖИТО', 'ЯЧМІНЬ', 'ОВЕС', 'КУКУРУДЗА', 'СОНЯШНИК',
-      'ТРОЯНДА', 'ТЮЛЬПАН', 'НАРЦИС', 'КОНВАЛІЯ', 'РОМАШКА', 'ВОЛОШКА',
-      'МАК', 'ПІВОНІЯ', 'ГЛАДІОЛУС', 'ХРИЗАНТЕМА', 'АЙСТРА', 'ЖОРЖИНА',
-      'ДУБ', 'БЕРЕЗА', 'СОСНА', 'ЯЛИНА', 'КЛЕН', 'КАШТАН', 'ВЕРБА',
-      'ТОПОЛЯ', 'ЛИПА', 'АКАЦІЯ', 'ГОРІХ', 'ВИШНЯ', 'ЯБЛУНЯ', 'ГРУША',
-      'ГОЛОВА', 'РУКА', 'НОГА', 'ОКО', 'ВУХО', 'НІС', 'РОТ', 'ЗУБ',
-      'ЯЗИК', 'ВОЛОССЯ', 'ШКІРА', 'КІСТКА', 'МЯЗИ', 'КРОВ', 'НЕРВИ',
-      'СОРОЧКА', 'ШТАНИ', 'ПЛАТТЯ', 'СПІДНИЦЯ', 'СВЕТР', 'КУРТКА',
-      'ПАЛЬТО', 'ШУБА', 'ШАПКА', 'ШАРФ', 'РУКАВИЧКИ', 'ЧЕРЕВИКИ',
-      'ЧОБОТИ', 'КРОСІВКИ', 'ТУФЛІ', 'САНДАЛІ', 'КАПЦІ', 'ШКАРПЕТКИ',
-      'СТІЛ', 'СТІЛЕЦЬ', 'КРІСЛО', 'ДИВАН', 'ЛІЖКО', 'ШАФА', 'ПОЛИЦЯ',
-      'ТУМБА', 'КОМОД', 'ДЗЕРКАЛО', 'ЛАМПА', 'ГОДИННИК', 'КАРТИНА',
-      'ВАЗА', 'ЧАШКА', 'ТАРІЛКА', 'ЛОЖКА', 'ВИДЕЛКА', 'НІЖ', 'КАСТРУЛЯ',
-      'СКОВОРОДА', 'ЧАЙНИК', 'КАВОВАРКА', 'МИСКА', 'ГЛЕЧИК', 'КЕЛИХ'
-    ].filter(w => w.length === 5);
-
-    const KEYBOARD_ROWS = [
-      ['Й', 'Ц', 'У', 'К', 'Е', 'Н', 'Г', 'Ш', 'Щ', 'З', 'Х', 'Ї'],
-      ['Ф', 'І', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Є', '⌫'],
-      ['\'', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', 'Ґ', '↵']
-    ];
-
-    let targetWord = '';
-    let currentRow = 0;
-    let currentCol = 0;
-    let currentGuess = '';
-    let gameOver = false;
-    let letterStates = {};
-
-    const grid = document.getElementById('grid');
-    const keyboard = document.getElementById('keyboard');
-    const message = document.getElementById('message');
-    const newGameBtn = document.getElementById('newGame');
-
-    function init() {
-      targetWord = WORDS[Math.floor(Math.random() * WORDS.length)];
-      currentRow = 0;
-      currentCol = 0;
-      currentGuess = '';
-      gameOver = false;
-      letterStates = {};
-      message.textContent = '';
-      newGameBtn.classList.add('hidden');
-      
-      createGrid();
-      createKeyboard();
-      
-      console.log('Слово:', targetWord);
-    }
-
-    function createGrid() {
-      grid.innerHTML = '';
-      for (let i = 0; i < 6; i++) {
-        const row = document.createElement('div');
-        row.className = 'flex gap-1.5';
-        for (let j = 0; j < 5; j++) {
-          const cell = document.createElement('div');
-          cell.className = 'w-14 h-14 border-2 border-gray-600 flex items-center justify-center text-2xl font-bold text-white uppercase';
-          cell.id = `cell-${i}-${j}`;
-          row.appendChild(cell);
-        }
-        grid.appendChild(row);
-      }
-    }
-
-    function createKeyboard() {
-      keyboard.innerHTML = '';
-      KEYBOARD_ROWS.forEach(row => {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'flex gap-1 justify-center';
-        row.forEach(key => {
-          const btn = document.createElement('button');
-          btn.className = 'min-w-[32px] h-12 px-2 bg-gray-500 text-white rounded font-semibold text-sm hover:bg-gray-400 transition';
-          btn.textContent = key;
-          btn.id = `key-${key}`;
-          btn.addEventListener('click', () => handleKeyPress(key));
-          rowDiv.appendChild(btn);
-        });
-        keyboard.appendChild(rowDiv);
-      });
-    }
-
-    function handleKeyPress(key) {
-      if (gameOver) return;
-
-      if (key === '⌫') {
-        if (currentCol > 0) {
-          currentCol--;
-          currentGuess = currentGuess.slice(0, -1);
-          const cell = document.getElementById(`cell-${currentRow}-${currentCol}`);
-          cell.textContent = '';
-          cell.classList.remove('border-gray-400');
-          cell.classList.add('border-gray-600');
-        }
-      } else if (key === '↵') {
-        submitGuess();
-      } else if (currentCol < 5) {
-        const cell = document.getElementById(`cell-${currentRow}-${currentCol}`);
-        cell.textContent = key;
-        cell.classList.remove('border-gray-600');
+  <script src="js/main.js" type="module"></script>
+  <script src="js/game.js" type="module"></script>
+</body>
+</html>
         cell.classList.add('border-gray-400');
         cell.classList.add('bounce');
         setTimeout(() => cell.classList.remove('bounce'), 300);

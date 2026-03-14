@@ -1,3 +1,5 @@
+import { showMessage } from './utils.js';
+
 const BASE = window.__API_BASE__ || '';
 
 // -- Simple API client
@@ -93,12 +95,6 @@ function createModal(title, onSubmit) {
   inpUser.focus();
 }
 
-function showMessage(text, duration = 3000) {
-  const el = document.getElementById('message');
-  if (!el) return;
-  el.textContent = text;
-  if (duration) setTimeout(() => { if (el.textContent === text) el.textContent = ''; }, duration);
-}
 
 async function refreshProfileUI() {
   const token = getToken();
@@ -190,5 +186,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
   refreshProfileUI();
 });
-
-export {};
